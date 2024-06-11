@@ -10,9 +10,8 @@ import sys
 config = BuildConfig(
     build_path="build",
     source_path="src",
-    hashes_path="build/hashes.json",
     sources=[
-        "alpha",
+        "number_of_day",
         "main"
     ],
     libraries=[

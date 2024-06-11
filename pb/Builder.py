@@ -33,7 +33,6 @@ class BuildConfig:
         self,
         build_path: str,
         source_path: str, 
-        hashes_path: str,
         sources: List[str], 
         libraries: List[str],
         libraries_dirs: List[str],
@@ -44,7 +43,6 @@ class BuildConfig:
     ) -> None:
         self.build_path = Path(build_path)
         self.source_path = Path(source_path)
-        self.hashes_path = Path(hashes_path)
         self.sources = [Path(p) for p in sources]
         self.libraries = libraries
         self.libraries_dirs = [Path(p) for p in libraries_dirs]
@@ -75,6 +73,9 @@ class BuildConfig:
                 self.source_path,
             )
         return CBuildElements(target, objects)
+    
+    def hashes_path(self) -> Path:
+        return self.build_path / build_subdirectory(self.build_type) / Path("hashes.json")
 
 
 def build_subdirectory(build_type: BuildType):
@@ -112,7 +113,7 @@ def build(config: BuildConfig):
     make_directories(config, target_element)
     build_queue = deque()
     try:
-        hashes = read_hashes_db(config.hashes_path)
+        hashes = read_hashes_db(config.hashes_path())
     except OSError as e:
         print(f"{Esc.red_bright}OS Error:{Esc.default} cannot access hash database, filename {e.filename}")
         return
@@ -147,7 +148,7 @@ def build(config: BuildConfig):
         return
 
     try:
-        write_hashes_db(config.hashes_path, hashes)
+        write_hashes_db(config.hashes_path(), hashes)
     except OSError as e:
         print(f"{Esc.red_bright}OS Error:{Esc.default} cannot access hash database, filename {e.filename}")
         return

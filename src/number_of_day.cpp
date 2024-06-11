@@ -1,9 +1,9 @@
 #include <iostream>
-#include "alpha.hpp"
+#include "number_of_day.hpp"
 using std::cout;
 
-void f()
+void print_number_of_day()
 {
-    cout << "Hello from alpha.hpp!\n";
+    cout << "Good day!\n";
     cout << "Number of the day: " << number_of_the_day << "\n";
 }
