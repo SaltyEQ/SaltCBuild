@@ -1,8 +1,16 @@
+"""
+Provide support for C/C++ build units.
+
+This module provides representations of C objects and targets,
+including their build commands and dependencies.
+These classes can be translated to BuildElement.
+"""
 from __future__ import annotations
+from typing import List
 import pathlib
-from typing import List, Sequence, Any
-from pb.BuildElement import BuildElement
 import json
+
+from pb.BuildElement import BuildElement
 
 class ClangCommandObject:
     def __init__(

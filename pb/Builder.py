@@ -1,20 +1,27 @@
+"""
+Provide ability to build a C/C++ project.
+
+This module provides function build(...),
+which takes project information in BuildConfig class,
+and builds the project, printing the progress.
+Possile build exceptions are handled.
+"""
+
 from __future__ import annotations
-
-from pb.BuildElement import *
-from pb.colored import Esc
-from pb.CBuildElement import *
-from pb.Dependency import read_depfile
-
 from enum import Enum, auto
 from collections import deque
-from typing import Callable
 from pathlib import Path
-import sys
+
+from pb.BuildElement import *
+from pb.Colored import Esc
+from pb.CBuildElement import *
+from pb.Dependency import read_depfile
 
 
 class BuildType(Enum):
     release = auto()
     debug = auto()
+
 
 class BuildAdditionalArgs:
     def __init__(
@@ -153,4 +160,3 @@ def build(config: BuildConfig):
         print(f"{Esc.red_bright}OS Error:{Esc.default} cannot access hash database, filename {e.filename}")
         return
     print(f"{Esc.green_bright}Done.{Esc.default}")
-

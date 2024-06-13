@@ -1,11 +1,14 @@
+"""
+This file contains project configuration and main().
+"""
+
 from __future__ import annotations
+import sys
 
 from pb.BuildElement import *
 from pb.Builder import BuildAdditionalArgs, BuildConfig, BuildType, build
-from pb.colored import Esc
 from pb.CBuildElement import *
 
-import sys
 
 config = BuildConfig(
     build_path="build",
@@ -28,6 +31,7 @@ config = BuildConfig(
     compiler="clang++",
     build_type=BuildType.release
 )
+
 
 if __name__ == "__main__":
     build_argument = sys.argv[1] if len(sys.argv) > 1 else None
