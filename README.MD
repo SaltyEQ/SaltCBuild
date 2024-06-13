@@ -1,4 +1,4 @@
-# SaltCBuild - an experimatal Pyton script for building C++ projects.
+# SaltCBuild - an experimatal Python script for building C++ projects.
 
 **EXPERIMENTAL**
 
