@@ -4,7 +4,7 @@ Provide ability to build a C/C++ project.
 This module provides function build(...),
 which takes project information in BuildConfig class,
 and builds the project, printing the progress.
-Possile build exceptions are handled.
+Possible build exceptions are handled.
 """
 
 from __future__ import annotations
@@ -139,7 +139,7 @@ def build(config: BuildConfig):
             c_build_elements
         )
     except OSError as e:
-        print(f"{Esc.red_bright}OS Error:{Esc.default} write clang compilation databasse, filename {e.filename}")
+        print(f"{Esc.red_bright}OS Error:{Esc.default} write clang compilation database, filename {e.filename}")
         return
     
     try:

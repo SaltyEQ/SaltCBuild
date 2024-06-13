@@ -1,9 +1,9 @@
 """
-Provide ANSI escape codes for beutiful output.
+Provide ANSI escape codes for beautiful output.
 """
 
 class Esc:
-    """Class containing ANSII escape codes"""
+    """Class containing ANSI escape codes"""
     bell = "\a"
     reset = "\033[0m"
     bold = "\033[1m"

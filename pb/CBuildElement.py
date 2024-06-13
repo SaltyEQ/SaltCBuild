@@ -54,7 +54,7 @@ class CObjectBuildElement:
         s.extend(("-o", f'"{str(self.object_file)}"'))
         return s
     
-    def toClangCommandOgbect(self):
+    def toClangCommandObject(self):
         return ClangCommandObject(
             self.source,
             self.command()
@@ -98,7 +98,7 @@ class CTargetBuildElement:
         s.extend(("-o", f'"{str(self.target)}"'))
         return s
     
-    def toClangCommandOgbect(self):
+    def toClangCommandObject(self):
         return ClangCommandObject(
             self.objects[0].object_file,
             self.command(),
@@ -124,10 +124,10 @@ class CBuildElements:
 def write_clang_compilation_database(path: pathlib.Path, elements: CBuildElements):
     unit_list = []
     for e in elements.objects:
-        unit_list.append(e.toClangCommandOgbect().to_json())
+        unit_list.append(e.toClangCommandObject().to_json())
     unit_list.append(
         elements.target
-        .toClangCommandOgbect().to_json()
+        .toClangCommandObject().to_json()
     )
     with open(path, "wt", encoding="utf-8") as f:
         json.dump(unit_list, f, indent=2)

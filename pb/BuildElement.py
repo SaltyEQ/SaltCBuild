@@ -1,5 +1,5 @@
 """
-Provide abilty to build an element only when needed using hashes.
+Provide ability to build an element only when needed using hashes.
 
 Class BuildElement represents something being built,
 and function update_build_queue() allows
@@ -29,7 +29,7 @@ class BuildElement:
     Fields:
     - path: Path - Path to the file being operated on
     - build_command: str - Command for building the file
-    - dependenies: List[BuildElement] - If any of these change,
+    - dependencies: List[BuildElement] - If any of these change,
         the file has to be rebuilt
     """
 

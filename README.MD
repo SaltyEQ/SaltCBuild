@@ -1,4 +1,4 @@
-# SaltCBuild - an experimatal Python script for building C++ projects.
+# SaltCBuild - an experimental Python script for building C++ projects.
 
 **EXPERIMENTAL**
 
@@ -16,13 +16,13 @@ To build run build.py
 ## Why
 
 Make has a rather weird syntax (just my taste), and is not aware of C++.
-And it either requieres using wildcards (which I don't want), 
+And it either requires using wildcards (which I don't want), 
 or doesn't do much to help except for knowing what needs to be rebuilt or not.
 
 Cmake is powerful, but also very complex. It's good when it works, 
-but I had hard time troublshooting it.
+but I had hard time troubleshooting it.
 
-Not saing those are bad instruments, I just had reasons to try
+Not saying those are bad instruments, I just had reasons to try
 to homebrew something.
 
 ## Features
