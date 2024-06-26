@@ -49,9 +49,9 @@ class CObjectBuildElement:
         s = []
         s.append(self.compiler)
         s.extend(self.additional_args)
-        s.append(f'-I"{self.source_dir.resolve()}"')
-        s.extend(("-c", f'"{str(self.source)}"'))
-        s.extend(("-o", f'"{str(self.object_file)}"'))
+        s.extend(("-I", f'{self.source_dir}'))
+        s.extend(("-c", f'{str(self.source)}'))
+        s.extend(("-o", f'{str(self.object_file)}'))
         return s
     
     def toClangCommandObject(self):
@@ -92,10 +92,10 @@ class CTargetBuildElement:
         s = []
         s.append(self.compiler)
         s.extend(self.additional_args)
-        s.extend((f'"{str(o.object_file)}"' for o in self.objects))
+        s.extend((f'{str(o.object_file)}' for o in self.objects))
         s.extend((f'-L"{str(l)}"' for l in self.libraries_dirs))
         s.extend((f'-l:{l}' for l in self.libraries))
-        s.extend(("-o", f'"{str(self.target)}"'))
+        s.extend(("-o", f'{str(self.target)}'))
         return s
     
     def toClangCommandObject(self):
