@@ -13,9 +13,9 @@ from pb.CBuildElement import *
 config = BuildConfig(
     build_path="build",
     source_path="src",
+    # sources=search_for_sources("src"),
     sources=[
-        "number_of_day",
-        "main"
+        
     ],
     libraries=[
 
@@ -29,7 +29,8 @@ config = BuildConfig(
         debug=["-g", "-glldb", "-std=c++20", "-MMD"]
     ),
     compiler="clang++",
-    build_type=BuildType.release
+    build_type=BuildType.release,
+    sources_search_pattern="**/*.cpp"
 )
 
 

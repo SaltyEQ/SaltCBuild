@@ -8,6 +8,7 @@ Possible build exceptions are handled.
 """
 
 from __future__ import annotations
+from typing import List
 from enum import Enum, auto
 from collections import deque
 from pathlib import Path
@@ -40,13 +41,14 @@ class BuildConfig:
         self,
         build_path: str,
         source_path: str, 
-        sources: List[str], 
+        sources: List[Any],
         libraries: List[str],
         libraries_dirs: List[str],
         target: str,
         additional_args: BuildAdditionalArgs,
         compiler: str,
-        build_type: BuildType
+        build_type: BuildType,
+        sources_search_pattern=None
     ) -> None:
         self.build_path = Path(build_path)
         self.source_path = Path(source_path)
@@ -57,6 +59,7 @@ class BuildConfig:
         self.additional_args = additional_args
         self.compiler = compiler
         self.build_type = build_type
+        self.sources_search_pattern = sources_search_pattern
 
     def toCBuildElements(self):
         objects = [
@@ -105,6 +108,15 @@ def make_directories(config: BuildConfig, element: BuildElement):
 
 
 def build(config: BuildConfig):
+    if config.sources_search_pattern:
+        try:
+            config.sources.extend([
+                p.resolve().relative_to(config.source_path.resolve()) 
+                for p in config.source_path.glob(config.sources_search_pattern)
+            ])
+        except OSError:
+            print(f"{Esc.red_bright}OS Error:{Esc.default} cannot find sources in source directory")
+
     c_build_elements = config.toCBuildElements()
 
     for e in c_build_elements.objects:
