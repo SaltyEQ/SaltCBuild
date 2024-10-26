@@ -12,7 +12,7 @@ The build queue can be executed with execute_build_queue() function.
 """
 
 from __future__ import annotations
-from typing import List, Dict, Any
+from typing import Any
 from collections import deque
 from pathlib import Path
 import hashlib
@@ -33,7 +33,7 @@ class BuildElement:
         the file has to be rebuilt
     """
 
-    def __init__(self, path: Path, build_command: str, dependencies: List[BuildElement]) -> None:
+    def __init__(self, path: Path, build_command: str, dependencies: list[BuildElement]) -> None:
         self.path = path
         self.build_command = build_command
         self.dependencies = dependencies
@@ -51,8 +51,8 @@ class Hashes:
     - from_obj(j: Any) - Read from a json object
     """
     def __init__(self) -> None:
-        self.file_hashes: Dict[Path, str] = dict()
-        self.command_hashes: Dict[Path, str] = dict()
+        self.file_hashes: dict[Path, str] = dict()
+        self.command_hashes: dict[Path, str] = dict()
     
     def to_obj(self) -> Any:
         """Represent as a json object"""
@@ -150,13 +150,13 @@ def check_command(command: str):
 
 
 class CommandFailException(Exception):
-    def __init__(self, command=None,  *args: object) -> None:
+    def __init__(self, command:str|None=None,  *args: object) -> None:
         super().__init__()
         self.command = command
 
 
 class CommandIllegalException(Exception):
-    def __init__(self, command=None,  *args: object) -> None:
+    def __init__(self, command:str|None=None,  *args: object) -> None:
         super().__init__()
         self.command = command
 

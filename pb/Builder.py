@@ -8,7 +8,6 @@ Possible build exceptions are handled.
 """
 
 from __future__ import annotations
-from typing import List
 from enum import Enum, auto
 from collections import deque
 from pathlib import Path
@@ -27,8 +26,8 @@ class BuildType(Enum):
 class BuildAdditionalArgs:
     def __init__(
         self,
-        release: List[str],
-        debug: List[str],
+        release: list[str],
+        debug: list[str],
     ) -> None:
         self.commands = {
             BuildType.release: release,
@@ -41,14 +40,14 @@ class BuildConfig:
         self,
         build_path: str,
         source_path: str, 
-        sources: List[Any],
-        libraries: List[str],
-        libraries_dirs: List[str],
+        sources: list[Any],
+        libraries: list[str],
+        libraries_dirs: list[str],
         target: str,
         additional_args: BuildAdditionalArgs,
         compiler: str,
         build_type: BuildType,
-        sources_search_pattern=None
+        sources_search_pattern:str|None=None
     ) -> None:
         self.build_path = Path(build_path)
         self.source_path = Path(source_path)
@@ -131,7 +130,7 @@ def build(config: BuildConfig) -> bool:
 
     target_element = c_build_elements.target.toBuildElement()
     make_directories(config, target_element)
-    build_queue = deque()
+    build_queue: deque[BuildElement] = deque()
     try:
         hashes = read_hashes_db(config.hashes_path())
     except OSError as e:

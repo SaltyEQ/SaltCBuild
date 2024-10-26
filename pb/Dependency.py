@@ -3,11 +3,10 @@ Support for reading .d files.
 """
 
 from __future__ import annotations
-from typing import Dict, List
 from pathlib import Path
 
 
-def read_depfile(element: Path) -> Dict[Path, List[Path]]:
+def read_depfile(element: Path) -> dict[Path, list[Path]]:
     """
     Read the .d file and return dependencies info.
     
@@ -17,7 +16,7 @@ def read_depfile(element: Path) -> Dict[Path, List[Path]]:
     dfile_path = element.with_suffix(".d")
     if not dfile_path.is_file():
         return {}
-    rules :Dict[Path, List[Path]] = {} 
+    rules :dict[Path, list[Path]] = {} 
     with open(dfile_path, "rt", encoding="utf-8") as f:
         lines = list(map(str.rstrip, f.readlines()))
     

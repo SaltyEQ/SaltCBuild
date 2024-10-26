@@ -6,7 +6,7 @@ including their build commands and dependencies.
 These classes can be translated to BuildElement.
 """
 from __future__ import annotations
-from typing import List
+from typing import Any
 import pathlib
 import json
 
@@ -16,12 +16,12 @@ class ClangCommandObject:
     def __init__(
         self, 
         file: pathlib.Path,
-        command: List[str],
+        command: list[str],
     ) -> None:
         self.file = file
         self.command = command
     
-    def to_json(self):
+    def to_json(self) -> dict[Any, Any]:
         return {
             "directory": ".",
             "arguments": self.command,
@@ -33,10 +33,10 @@ class CObjectBuildElement:
         self, 
         source: pathlib.Path,
         object_file: pathlib.Path,
-        additional_args: List[str],
+        additional_args: list[str],
         compiler: str,
         source_dir: pathlib.Path,
-        headers: List[pathlib.Path]
+        headers: list[pathlib.Path]
     ) -> None:
         self.source = source
         self.object_file = object_file
@@ -45,8 +45,8 @@ class CObjectBuildElement:
         self.source_dir = source_dir
         self.headers = headers
     
-    def command(self) -> List[str]:
-        s = []
+    def command(self) -> list[str]:
+        s: list[str] = []
         s.append(self.compiler)
         s.extend(self.additional_args)
         s.extend(("-I", f'{self.source_dir}'))
@@ -72,11 +72,11 @@ class CObjectBuildElement:
 class CTargetBuildElement:
     def __init__(
         self,
-        objects: List[CObjectBuildElement],
-        libraries: List[str],
-        libraries_dirs: List[pathlib.Path],
+        objects: list[CObjectBuildElement],
+        libraries: list[str],
+        libraries_dirs: list[pathlib.Path],
         target: pathlib.Path,
-        additional_args: List[str],
+        additional_args: list[str],
         compiler: str,
         source_dir: pathlib.Path,
     ) -> None:
@@ -88,8 +88,8 @@ class CTargetBuildElement:
         self.compiler = compiler
         self.source_dir = source_dir
 
-    def command(self) -> List[str]:
-        s = []
+    def command(self) -> list[str]:
+        s: list[str] = []
         s.append(self.compiler)
         s.extend(self.additional_args)
         s.extend((f'{str(o.object_file)}' for o in self.objects))
@@ -115,14 +115,14 @@ class CBuildElements:
     def __init__(
         self, 
         target: CTargetBuildElement,
-        objects: List[CObjectBuildElement],
+        objects: list[CObjectBuildElement],
     ) -> None:
         self.target = target
         self.objects = objects
     
 
 def write_clang_compilation_database(path: pathlib.Path, elements: CBuildElements):
-    unit_list = []
+    unit_list: list[Any] = []
     for e in elements.objects:
         unit_list.append(e.toClangCommandObject().to_json())
     unit_list.append(
