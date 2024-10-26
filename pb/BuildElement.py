@@ -145,17 +145,8 @@ def file_hash_changed(element: BuildElement, hashes: Hashes, hashes_new: Hashes)
     return ((element.path not in hashes.file_hashes) 
             or (current_hash != hashes.file_hashes[element.path]))
 
-def check_command(command: str):
-    return True # TODO:
-
 
 class CommandFailException(Exception):
-    def __init__(self, command:str|None=None,  *args: object) -> None:
-        super().__init__()
-        self.command = command
-
-
-class CommandIllegalException(Exception):
     def __init__(self, command:str|None=None,  *args: object) -> None:
         super().__init__()
         self.command = command
@@ -170,8 +161,6 @@ def execute_build_queue(build_queue: deque[BuildElement], hashes: Hashes):
     while build_queue:
         element = build_queue.pop()
         if element.build_command != "":
-            if not check_command(element.build_command):
-                raise CommandIllegalException(element.build_command)
             try:
                 print(f'{Esc.dim}building {str(element.path)}: {element.build_command}{Esc.n_dim}')
                 r = subprocess.run(element.build_command, capture_output=True, encoding="utf-8", shell=True)

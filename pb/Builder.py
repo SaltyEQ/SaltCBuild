@@ -159,9 +159,6 @@ def build(config: BuildConfig) -> bool:
     except OSError as e:
         print(f"{Esc.red_bright}OS Error:{Esc.default} cannot access a file, filename {e.filename}")
         return False
-    except CommandIllegalException as e:
-        print(f"{Esc.red_bright}Illegal command Error:{Esc.default} tried to execute an illegal command: {e.command}")
-        return False
     except CommandFailException as e:
         print(f"{Esc.red_bright}Build failure:{Esc.default} build command failed. The command: {e.command}")
         return False
