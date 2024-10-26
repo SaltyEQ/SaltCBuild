@@ -35,6 +35,16 @@ class BuildAdditionalArgs:
         }
 
 
+class CombinedCBuildElements:
+    def __init__(
+        self,
+        requested: CBuildElements,
+        debug: CBuildElements
+    ) -> None:
+        self.requested = requested
+        self.debug = debug
+
+
 class BuildConfig:
     def __init__(
         self,
@@ -60,12 +70,21 @@ class BuildConfig:
         self.build_type = build_type
         self.sources_search_pattern = sources_search_pattern
 
-    def toCBuildElements(self):
+    def toCombinedCBuildElements(self):
+        return CombinedCBuildElements(
+            self._toCBuildElementsWithBuildType(self.build_type),
+            self._toCBuildElementsWithBuildType(BuildType.debug)
+        )
+    
+    def hashes_path(self) -> Path:
+        return self.build_path / build_subdirectory(self.build_type) / Path("hashes.json")
+    
+    def _toCBuildElementsWithBuildType(self, build_type: BuildType):
         objects = [
             CObjectBuildElement(
                 (self.source_path / s).with_suffix(".cpp"),
                 (self.build_path / build_subdirectory(self.build_type) / s).with_suffix(".o"),
-                self.additional_args.commands[self.build_type],
+                self.additional_args.commands[build_type],
                 self.compiler,
                 self.source_path,
                 []
@@ -76,15 +95,12 @@ class BuildConfig:
                 objects,
                 self.libraries,
                 self.libraries_dirs,
-                self.build_path / build_subdirectory(self.build_type) / self.target,
-                self.additional_args.commands[self.build_type],
+                self.build_path / build_subdirectory(build_type) / self.target,
+                self.additional_args.commands[build_type],
                 self.compiler,
                 self.source_path,
             )
         return CBuildElements(target, objects)
-    
-    def hashes_path(self) -> Path:
-        return self.build_path / build_subdirectory(self.build_type) / Path("hashes.json")
 
 
 def build_subdirectory(build_type: BuildType):
@@ -117,7 +133,9 @@ def build(config: BuildConfig) -> bool:
         except OSError:
             print(f"{Esc.red_bright}OS Error:{Esc.default} cannot find sources in source directory")
 
-    c_build_elements = config.toCBuildElements()
+    combined_c_build_elements = config.toCombinedCBuildElements()
+    c_build_elements = combined_c_build_elements.requested
+    debug_c_build_elements = combined_c_build_elements.debug
 
     for e in c_build_elements.objects:
         try:
@@ -148,7 +166,7 @@ def build(config: BuildConfig) -> bool:
     try:
         write_clang_compilation_database(
             config.build_path / Path("compile_commands.json"),
-            c_build_elements
+            debug_c_build_elements
         )
     except OSError as e:
         print(f"{Esc.red_bright}OS Error:{Esc.default} write clang compilation database, filename {e.filename}")
