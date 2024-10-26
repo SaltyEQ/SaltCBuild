@@ -107,7 +107,8 @@ def make_directories(config: BuildConfig, element: BuildElement):
     f(element)
 
 
-def build(config: BuildConfig):
+def build(config: BuildConfig) -> bool:
+    """Build with config. Return whether build succeeded."""
     if config.sources_search_pattern:
         try:
             config.sources.extend([
@@ -124,7 +125,7 @@ def build(config: BuildConfig):
             rules = read_depfile(e.object_file)   
         except OSError as e:
             print(f"{Esc.red_bright}OS Error:{Esc.default} cannot access a depfile, filename {e.filename}")
-            return
+            return False
         if e.object_file in rules:
             e.headers = rules[e.object_file]
 
@@ -135,14 +136,14 @@ def build(config: BuildConfig):
         hashes = read_hashes_db(config.hashes_path())
     except OSError as e:
         print(f"{Esc.red_bright}OS Error:{Esc.default} cannot access hash database, filename {e.filename}")
-        return
+        return False
     hashes_new = Hashes()
 
     try:
         update_build_queue(target_element, hashes, build_queue, hashes_new)
     except OSError as e:
         print(f"{Esc.red_bright}OS Error:{Esc.default} cannot access a file, filename {e.filename}")
-        return
+        return False
     hashes = hashes_new
 
     try:
@@ -152,23 +153,24 @@ def build(config: BuildConfig):
         )
     except OSError as e:
         print(f"{Esc.red_bright}OS Error:{Esc.default} write clang compilation database, filename {e.filename}")
-        return
+        return False
     
     try:
         execute_build_queue(build_queue, hashes)
     except OSError as e:
         print(f"{Esc.red_bright}OS Error:{Esc.default} cannot access a file, filename {e.filename}")
-        return
+        return False
     except CommandIllegalException as e:
         print(f"{Esc.red_bright}Illegal command Error:{Esc.default} tried to execute an illegal command: {e.command}")
-        return
+        return False
     except CommandFailException as e:
         print(f"{Esc.red_bright}Build failure:{Esc.default} build command failed. The command: {e.command}")
-        return
+        return False
 
     try:
         write_hashes_db(config.hashes_path(), hashes)
     except OSError as e:
         print(f"{Esc.red_bright}OS Error:{Esc.default} cannot access hash database, filename {e.filename}")
-        return
+        return False
     print(f"{Esc.green_bright}Done.{Esc.default}")
+    return True

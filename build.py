@@ -45,4 +45,6 @@ if __name__ == "__main__":
         print("Unknown build type.")
         sys.exit()
     
-    build(config)
+    r = build(config)
+    if r is not True:
+        sys.exit(1)
