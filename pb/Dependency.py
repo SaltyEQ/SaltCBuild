@@ -11,7 +11,7 @@ def read_depfile(element: Path) -> dict[Path, list[Path]]:
     Read the .d file and return dependencies info.
     
     Returns a dict where keys are targets
-    and values are lists of dependencies.
+    and values are lists of dependencies (only the headers).
     """
     dfile_path = element.with_suffix(".d")
     if not dfile_path.is_file():
@@ -33,5 +33,13 @@ def read_depfile(element: Path) -> dict[Path, list[Path]]:
         if len(rule) < 2:
             continue
         rules[Path(rule[0][:-1])] = [Path(d) for d in rule[1:]]
+    
+    # Filter only the headers
+    for rule in rules:
+        rules[rule] = list(filter(
+            lambda p: p.suffix in [".h", ".hpp"], 
+            rules[rule]
+        ))
+
     
     return rules
