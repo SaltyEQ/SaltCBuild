@@ -6,14 +6,13 @@ from __future__ import annotations
 import sys
 
 from pb.BuildElement import *
-from pb.Builder import BuildAdditionalArgs, BuildConfig, BuildType, build
+from pb.Builder import BuildAdditionalArgs, BuildConfig, BuildType, build, delete_build
 from pb.CBuildElement import *
 
 
 config = BuildConfig(
     build_path="build",
     source_path="src",
-    # sources=search_for_sources("src"),
     sources=[
         
     ],
@@ -35,16 +34,29 @@ config = BuildConfig(
 
 
 if __name__ == "__main__":
-    build_argument = sys.argv[1] if len(sys.argv) > 1 else None
+    args = sys.argv[1:]
+    for arg in args:
+        if arg not in ("clean", "release", "debug"):
+            print(f"Unrecognized option {arg}, build is cancelled.")
+            sys.exit(1)
     
-    if build_argument == None or build_argument == "release":
+    should_clean = ("clean" in args)
+    should_build = (
+        "debug" in args 
+        or "release" in args 
+        or len(args) == 0
+    )
+
+    if "release" in args:
         config.build_type = BuildType.release
-    elif build_argument == "debug":
-        config.build_type = BuildType.debug
     else:
-        print("Unknown build type.")
-        sys.exit()
+        config.build_type = BuildType.debug
     
-    r = build(config)
-    if r is not True:
-        sys.exit(1)
+    if should_clean:
+        r = delete_build(config)
+        if r is not True:
+            sys.exit(1)
+    if should_build:
+        r = build(config)
+        if r is not True:
+            sys.exit(1)

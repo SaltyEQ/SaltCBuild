@@ -122,6 +122,40 @@ def make_directories(config: BuildConfig, element: BuildElement):
     f(element)
 
 
+def delete_build(config: BuildConfig) -> bool:
+    print(f"Clean - deleting build files...")
+    try:
+        for build_type in (BuildType.debug, BuildType.release):
+            directory = config.build_path / build_subdirectory(build_type)
+            if not directory.is_dir():
+                continue
+            for p in directory.iterdir():
+                p.unlink()
+            directory.rmdir()
+        (config.build_path / Path("compile_commands.json"))\
+            .unlink(missing_ok=True)
+        if config.build_path.is_dir():
+            config.build_path.rmdir()
+        return True
+    except OSError as e:
+        print(
+            f"{Esc.red_bright}"
+            + f"Error when deleting the build directory!"
+            + f"{Esc.default}"
+        )
+        print(
+            f"{Esc.red_bright}"
+            + f"OS Error:{Esc.default} troubles with filename "
+            + f"{e.filename}"
+        )
+        print(
+            f"{Esc.red_bright}"
+            + f"Warning: be careful when deleting stuff!"
+            + f"{Esc.default}"
+        )
+        return False
+
+
 def build(config: BuildConfig) -> bool:
     """Build with config. Return whether build succeeded."""
     if config.sources_search_pattern:
