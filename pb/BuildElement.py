@@ -154,7 +154,7 @@ class CommandFailException(Exception):
 
 def execute_build_queue(build_queue: deque[BuildElement], hashes: Hashes):
     """
-    Execute the build queue and return new hashes.
+    Execute the build queue and update the hashes.
 
     May throw an exception.
     """
@@ -171,6 +171,5 @@ def execute_build_queue(build_queue: deque[BuildElement], hashes: Hashes):
                 raise CommandFailException(element.build_command)
             if (r.stdout):
                 print(r.stdout)
-        hashes.command_hashes[element.path] = get_command_hash(element.build_command)
         hashes.file_hashes[element.path] = get_file_hash(element.path)
 
