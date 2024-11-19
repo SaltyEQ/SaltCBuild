@@ -136,6 +136,7 @@ def delete_build(config: BuildConfig) -> bool:
             .unlink(missing_ok=True)
         if config.build_path.is_dir():
             config.build_path.rmdir()
+        print(f"{Esc.green_bright}Done.{Esc.default}")
         return True
     except OSError as e:
         print(
@@ -214,6 +215,22 @@ def build(config: BuildConfig) -> bool:
     except CommandFailException as e:
         print(f"{Esc.red_bright}Build failure:{Esc.default} build command failed. The command: {e.command}")
         return False
+
+    for e in c_build_elements.objects:
+        try:
+            rules = read_depfile(e.object_file)   
+        except OSError as e:
+            print(f"{Esc.red_bright}OS Error:{Esc.default} cannot access a depfile, filename {e.filename}")
+            return False
+        try:
+            if e.object_file in rules:
+                headers = rules[e.object_file]
+                for header in headers:
+                    hashes.file_hashes[header] = get_file_hash(header)
+                    hashes.command_hashes[header] = get_command_hash("")
+        except OSError as e:
+            print(f"{Esc.red_bright}OS Error:{Esc.default} cannot access a file, filename {e.filename}")
+            return False
 
     try:
         write_hashes_db(config.hashes_path(), hashes)
